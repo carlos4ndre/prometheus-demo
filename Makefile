@@ -1,8 +1,8 @@
 .PHONY: all
 .DEFAULT_GOAL := help
 
-KOPS_CLUSTER_NAME := auto.k8s.local
-KOPS_STATE_STORE := s3://auto-state-store
+KOPS_CLUSTER_NAME := test.k8s.local
+KOPS_STATE_STORE := s3://test-state-store
 K8S_NAMESPACE := monitoring
 K8S_CURRENT_CONTEXT := $(shell kubectl config current-context)
 DEMO_APP_IMAGE := carlos4ndre/prometheus-demo:dev
