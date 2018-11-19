@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mail
+  namespace: monitoring
+  labels:
+    app: mail
+    component: core
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    name: web
+  - port: 25
+    name: smtp
+  selector:
+    app: mail
+    component: core
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mail
+  namespace: monitoring
+  labels:
+    app: mail
+    component: core
+spec:
+  selector:
+    matchLabels:
+      app: mail
+      component: core
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mail
+        component: core
+    spec:
+      containers:
+      - name: mail
+        image: djfarrelly/maildev
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 80
+        - containerPort: 25

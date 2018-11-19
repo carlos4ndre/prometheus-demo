@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: monitoring
+  labels:
+    app: redis
+    component: core
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9121"
+    external-dns.alpha.kubernetes.io/hostname: redis.k8s.local.
+spec:
+  ports:
+  - port: 6379
+    name: redis
+  - port: 9121
+    name: metrics
+  selector:
+    app: redis
+    component: core
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: monitoring
+  labels:
+    app: redis
+    component: core
+spec:
+  selector:
+    matchLabels:
+      app: redis
+      component: core
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: redis
+        component: core
+    spec:
+      containers:
+      - name: master
+        image: redis
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 6379
+      - name: redis-exporter
+        image: oliver006/redis_exporter:v0.21.2
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 9121

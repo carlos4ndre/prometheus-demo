@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-app
+  namespace: monitoring
+  labels:
+    app: demo-app
+    component: core
+  annotations:
+    prometheus.io/scrape: "true"
+    external-dns.alpha.kubernetes.io/hostname: demo-app.k8s.local.
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: api
+      name: api
+  selector:
+    app: demo-app
+    component: core
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: demo-app
+  namespace: monitoring
+  labels:
+    app: demo-app
+    component: core
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: demo-app
+        component: core
+    spec:
+      containers:
+      - image: carlos4ndre/prometheus-demo:dev
+        name: demo-app
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+          - containerPort: 80
+            name: api
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: 80
+          initialDelaySeconds: 30
+          timeoutSeconds: 10
+          periodSeconds: 1
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /metrics
+            port: 80
+          initialDelaySeconds: 10
+          timeoutSeconds: 10
+          periodSeconds: 2
