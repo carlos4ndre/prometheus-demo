@@ -30,7 +30,7 @@ spec:
               if [ -e "$file" ] ; then
                 echo "importing $file" &&
                 curl --silent --fail --show-error \
-                  --request POST http://auto:auto@grafana:3000/api/datasources \
+                  --request POST http://admin:admin@grafana:3000/api/datasources \
                   --header "Content-Type: application/json" \
                   --header "Accept: application/json" \
                   --data-binary "@$file" ;

@@ -54,9 +54,9 @@ spec:
           - name: GF_AUTH_ANONYMOUS_ENABLED
             value: "false"
           - name: GF_SECURITY_ADMIN_USER
-            value: "auto"
+            value: "admin"
           - name: GF_SECURITY_ADMIN_PASSWORD
-            value: "auto"
+            value: "admin"
         readinessProbe:
           httpGet:
             path: /login
